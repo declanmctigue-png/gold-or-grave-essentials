@@ -1,0 +1,16 @@
+{
+  "Group": "GoldOrGrave",
+  "Name": "GoldOrGraveEssentials",
+  "Version": "0.1.0",
+  "Main": "com.goldorgrave.essentials.GoldOrGraveEssentialsPlugin",
+  "ServerVersion": "*",
+  "Dependencies": {
+    "Hytale:I18nModule": "*"
+  },
+  "Authors": [
+    {
+      "Name": "Declan",
+      "Url": "https://goldorgrave.com"
+    }
+  ]
+}
