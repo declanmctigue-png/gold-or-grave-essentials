@@ -1,5 +1,5 @@
 // Kit.java
-package com.goldorgrave.essentials.model;
+package com.goldorgrave.essentials.perms.model;
 
 import java.util.List;
 

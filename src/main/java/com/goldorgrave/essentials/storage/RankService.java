@@ -1,7 +1,7 @@
 // File: com/goldorgrave/essentials/storage/RankService.java
 package com.goldorgrave.essentials.storage;
 
-import com.goldorgrave.essentials.model.Rank;
+import com.goldorgrave.essentials.perms.model.Rank;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,17 +13,15 @@ public final class RankService {
 
     public void ensureDefaults() {
         if (!ranksByName.containsKey("default")) {
-            upsertRank(new Rank("default", 0, Set.of()));
+            new Rank("default", 0, Set.of(), null);
         }
         if (!ranksByName.containsKey("admin")) {
-            upsertRank(new Rank("admin", 100, Set.of("gog.*")));
+            new Rank("admin", 100, Set.of("gog.*"), "&c[ADMIN]&r ");
         }
     }
 
     public Set<String> listRanks() {
-        TreeSet<String> out = new TreeSet<>();
-        out.addAll(ranksByName.keySet());
-        return out;
+        return new TreeSet<>(ranksByName.keySet());
     }
 
     public Rank getRank(String name) {
@@ -36,7 +34,7 @@ public final class RankService {
         String n = Rank.normalizeName(name);
         if (n == null) return false;
         if (ranksByName.containsKey(n)) return false;
-        ranksByName.put(n, new Rank(n, priority, Set.of()));
+        ranksByName.put(n, new Rank(n, priority, Set.of(), null));
         return true;
     }
 
@@ -76,15 +74,39 @@ public final class RankService {
     public boolean addPermToRank(String rankName, String perm) {
         Rank r = getRank(rankName);
         if (r == null) return false;
-        Rank next = r.withPermissionAdded(perm);
-        upsertRank(next);
+        upsertRank(r.withPermissionAdded(perm));
         return true;
     }
 
     public boolean removePermFromRank(String rankName, String perm) {
         Rank r = getRank(rankName);
         if (r == null) return false;
-        Rank next = r.withPermissionRemoved(perm);
+        upsertRank(r.withPermissionRemoved(perm));
+        return true;
+    }
+
+    // ----------------------------
+    // Prefix support
+    // ----------------------------
+
+    /**
+     * Returns the configured prefix for a rank, or null if none exists.
+     */
+    public String getRankPrefix(String rankName) {
+        Rank r = getRank(rankName);
+        if (r == null) return null;
+        return r.prefix();
+    }
+
+    /**
+     * Sets (or clears) the configured prefix for a rank.
+     * Pass null or blank to clear.
+     */
+    public boolean setRankPrefix(String rankName, String prefixOrNull) {
+        Rank r = getRank(rankName);
+        if (r == null) return false;
+
+        Rank next = r.withPrefix(prefixOrNull);
         upsertRank(next);
         return true;
     }

@@ -1,4 +1,4 @@
-package com.goldorgrave.essentials.model;
+package com.goldorgrave.essentials.perms.model;
 
 public final class HomeLocation {
 
